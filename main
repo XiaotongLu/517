@@ -1,0 +1,864 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Template for USENIX papers.
+%
+% History:
+%
+% - TEMPLATE for Usenix papers, specifically to meet requirements of
+%   USENIX '05. originally a template for producing IEEE-format
+%   articles using LaTeX. written by Matthew Ward, CS Department,
+%   Worcester Polytechnic Institute. adapted by David Beazley for his
+%   excellent SWIG paper in Proceedings, Tcl 96. turned into a
+%   smartass generic template by De Clarke, with thanks to both the
+%   above pioneers. Use at your own risk. Complaints to /dev/null.
+%   Make it two column with no page numbering, default is 10 point.
+%
+% - Munged by Fred Douglis <douglis@research.att.com> 10/97 to
+%   separate the .sty file from the LaTeX source template, so that
+%   people can more easily include the .sty file into an existing
+%   document. Also changed to more closely follow the style guidelines
+%   as represented by the Word sample file.
+%
+% - Note that since 2010, USENIX does not require endnotes. If you
+%   want foot of page notes, don't include the endnotes package in the
+%   usepackage command, below.
+% - This version uses the latex2e styles, not the very ancient 2.09
+%   stuff.
+%
+% - Updated July 2018: Text block size changed from 6.5" to 7"
+%
+% - Updated Dec 2018 for ATC'19:
+%
+%   * Revised text to pass HotCRP's auto-formatting check, with
+%     hotcrp.settings.submission_form.body_font_size=10pt, and
+%     hotcrp.settings.submission_form.line_height=12pt
+%
+%   * Switched from \endnote-s to \footnote-s to match Usenix's policy.
+%
+%   * \section* => \begin{abstract} ... \end{abstract}
+%
+%   * Make template self-contained in terms of bibtex entires, to allow
+%     this file to be compiled. (And changing refs style to 'plain'.)
+%
+%   * Make template self-contained in terms of figures, to
+%     allow this file to be compiled.
+%
+%   * Added packages for hyperref, embedding fonts, and improving
+%     appearance.
+%
+%   * Removed outdated text.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[letterpaper,twocolumn,10pt]{article}
+\usepackage{usenix2019_v3}
+
+% to be able to draw some self-contained figs
+\usepackage{tikz}
+\usepackage{amsmath}
+\usepackage{multirow}
+\usepackage{tabularx}
+
+\usepackage{caption}
+\usepackage{subcaption}
+
+% code snippets
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{lipsum}
+\usepackage{courier}
+
+\lstset{basicstyle=\footnotesize\ttfamily,breaklines=true}
+\lstset{framextopmargin=50pt,frame=bottomline}
+
+
+% inlined bib file
+\usepackage{filecontents}
+
+%-------------------------------------------------------------------------------
+\begin{filecontents}{\jobname.bib}
+%-------------------------------------------------------------------------------
+
+
+@InProceedings{statcounter-oct20,
+  author =      {StatCounter},
+  title =       {Browser Market Share Worldwide - October 2020},
+  booktitle =   {},
+  year =        2020,
+  note =        {\url{https://gs.statcounter.com/browser-market-share/desktop/worldwide} [Online; accessed 5 November 2020]}}
+
+@inproceedings{webassembly,
+author = {Haas, Andreas and Rossberg, Andreas and Schuff, Derek L. and Titzer, Ben L. and Holman, Michael and Gohman, Dan and Wagner, Luke and Zakai, Alon and Bastien, JF},
+title = {Bringing the Web up to Speed with WebAssembly},
+year = {2017},
+isbn = {9781450349888},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3062341.3062363},
+doi = {10.1145/3062341.3062363},
+abstract = { The maturation of the Web platform has given rise to sophisticated and demanding Web applications such as interactive 3D visualization, audio and video software, and games. With that, efficiency and security of code on the Web has become more important than ever. Yet JavaScript as the only built-in language of the Web is not well-equipped to meet these requirements, especially as a compilation target. Engineers from the four major browser vendors have risen to the challenge and collaboratively designed a portable low-level bytecode called WebAssembly. It offers compact representation, efficient validation and compilation, and safe low to no-overhead execution. Rather than committing to a specific programming model, WebAssembly is an abstraction over modern hardware, making it language-, hardware-, and platform-independent, with use cases beyond just the Web. WebAssembly has been designed with a formal semantics from the start. We describe the motivation, design and formal semantics of WebAssembly and provide some preliminary experience with implementations. },
+booktitle = {Proceedings of the 38th ACM SIGPLAN Conference on Programming Language Design and Implementation},
+pages = {185??200},
+numpages = {16},
+keywords = {type systems, virtual machines, programming languages, just-in-time compilers, assembly languages},
+location = {Barcelona, Spain},
+series = {PLDI 2017}
+}
+
+@inproceedings {notSoFast,
+author = {Abhinav Jangda and Bobby Powers and Emery D. Berger and Arjun Guha},
+title = {Not So Fast: Analyzing the Performance of WebAssembly vs. Native Code},
+booktitle = {2019 {USENIX} Annual Technical Conference ({USENIX} {ATC} 19)},
+year = {2019},
+isbn = {978-1-939133-03-8},
+address = {Renton, WA},
+pages = {107--120},
+url = {https://www.usenix.org/conference/atc19/presentation/jangda},
+publisher = {{USENIX} Association},
+month = jul,
+}
+
+@inproceedings{Herrera2018WebAssemblyAJ,
+  title={WebAssembly and JavaScript Challenge: Numerical program performance using modern browser technologies and devices},
+  author={D. Herrera and H. Chen and Erick Lavoie},
+  year={2018}
+}
+
+@inproceedings{Fras2019WebAssemblyH,
+  title={WebAssembly - Hope for Fast Acceleration of Web Applications Using JavaScript},
+  author={Krystian Fras and Ziemowit Nowak},
+  booktitle={ISAT},
+  year={2019}
+}
+
+@inproceedings {arne,
+author = {Arne Vogel},
+title = {How fast is WebAssembly?},
+publisher = {University of Technology Braunschweig},
+month = jun,
+year=2020
+}
+
+\end{filecontents}
+
+%-------------------------------------------------------------------------------
+\begin{document}
+%-------------------------------------------------------------------------------
+
+% don't want date printed
+\date{}
+
+% make title bold and 14 pt font (Latex default is non-bold, 16 pt)
+\title{Empirical WebAssembly Benchmarking}
+
+% for single author (just remove % characters)
+\author{
+{\rm Ryuichi Sai Qi}\\
+ql19@rice.edu
+\and
+{\rm Andrew Obler}\\
+ajo2@rice.edu
+\and
+{\rm Xiaotong Lu}\\
+xl74@rice.edu
+}
+% end author
+
+\maketitle
+
+%-------------------------------------------------------------------------------
+% \begin{abstract}
+% %-------------------------------------------------------------------------------
+% Your abstract text goes here. Just a few facts. Whet our appetites.
+% Not more than 200 words, if possible, and preferably closer to 150.
+% \end{abstract}
+
+
+%-------------------------------------------------------------------------------
+\section{Introduction}
+%-------------------------------------------------------------------------------
+
+Web applications have been sharing the software market with native applications for many years, each with its own benefits and downsides.
+Native applications tend to perform exceptionally well when compiled into a binary format, but the need for this compilation step plus the specificity of native libraries and frameworks substantially reduces their portability.
+Webapps, on the other hand, are more accessible and portable due to the ubiquity and broad standardization of web browsers; however, despite years of optimization and intensive research, JavaScript still underperforms in comparison to native code.
+
+Among recent efforts to resolve the problem of efficient and portable code execution, WebAssembly has gained a strong foothold.
+WebAssembly is a low-level, statically typed language that is interoperable with JavaScript.
+It is a joint effort from a group of browser vendors with the goal of a universal compiler target that can run in a browser.
+It is intended to be safe, portable, and fast in comparison to other web programming languages.
+
+There is general agreement on the language's safety, due to its formal guarantees of type and memory consistency, and the fact that it executes solely within sandboxed browser environments.
+Furthermore, its portability is becoming more and more apparent; 90.12\% of internet browsing traffic comes from browsers with WebAssembly support \cite{statcounter-oct20}.
+Nevertheless, there exist some doubts among both research communities and industry regarding its performance.
+While there are numerous papers and articles advertising WebAssembly's excellent performance \cite{webassembly,Fras2019WebAssemblyH,Herrera2018WebAssemblyAJ},
+concerns have been raised about whether they represent the actual use of WebAssembly.
+On the contrary to the conclusions from previous works, Jangda et al. \cite{notSoFast} and Vogel \cite{arne} present that WebAssembly has poor performance in practical situations.
+So, with contradicting information available, we argue that a clearer picture of the real-world performance of WebAssembly is of great interest.
+
+In doing our research, we believe that none of the existing work is representative of actual real-world use cases of WebAssembly.
+Most of the publications we have come across, including the original WebAssembly paper, benchmark on intensive yet highly specific numeric calculations.
+However, a great number of webapps are not targeted at this sort of behavior.
+More elaborate benchmarking setups exist, such as that posed by Jangda et al. \cite{notSoFast} which profiles a browser-based Linux installation using WebAssembly.
+While interesting, these still suffer from the same problem of not reflecting the actual use cases of WebAssembly.
+We seek to fill in the gap by selecting benchmarks that reflect WebAssembly's real-world performance.
+
+In addition, a great portion of network traffic nowadays comes from mobile devices.
+However, the performance of WebAssembly on mobile devices remains poorly documented and warrants further study.
+
+In this paper, we aim to understand how WebAssembly performs in practice according to its real-world use.
+To do so, we study the performance characteristics of WebAssembly using empirical benchmarking.
+Our goal is to not only provide a fair evaluation of WebAssembly's performance, but also provide an understanding of the reasons for that performance
+by inspecting generated WebAssembly code.
+To ease this inspection, a ``WebAssembly Explorer'' application is implemented and deployed.
+
+This paper makes the following contributions:
+
+\begin{itemize}
+  \item We select existing benchmark suites that reflect the real-world use of WebAssembly, and conduct performance benchmarking;
+  \item We derive our own benchmarking to represent actual WebAssembly use;
+  \item We compare across several browser platforms running on a broad variety of desktop operating systems and mobile operating systems;
+  \item We implement a WebAssembly Explorer application and study the generated code; and
+  \item We inspect the JIT-ed instructions from WebAssembly to understand and explain the factors that impact performance.
+\end{itemize}
+
+The remainder of the paper is organized as follows.
+Section \ref{sec:background} describes the background and related work.
+Section \ref{sec:methodologies} and \ref{sec:eval} respectively discuss our benchmarking methodologies and evaluation approach.
+Section \ref{sec:results} presents our results and discussions.
+Section \ref{sec:explorer} describes the WebAssembly Explorer application, and presents our findings thereof.
+Section \ref{sec:conclusion} concludes this report and discusses future work.
+
+\section{Background \& Related Work}\label{sec:background}
+
+WebAssembly \cite{webassembly} was introduced to the computing world through a joint effort from major browser vendors.
+Its purpose was to solve numerous security and performance issues present in contemporary browsers.
+The original paper includes some initial benchmarks using PolyBenchC and shows that WebAssembly runs within 10\% of the speed of native code.
+It also makes comparisons with asm.js, demonstrating that WebAssembly is 33.7\% faster on average, and that the size of the output binary is considerably smaller.
+While the initial benchmarks show promising results, the benchmarking methods do not reflect the actual practical use of WebAssembly seen today.
+
+In \cite{Fras2019WebAssemblyH}, the authors praise WebAssembly for its performance.
+The paper refreshes WebAssembly with up-to-date features, including multithreading and progressive web applications.
+It also includes two case studies, one with Figma and the other with eBay.
+Figma uses WebAssembly to improve its file loading and its website DOM parsing; the company reports a threefold speedup.
+eBay improves their barcode scanning feature with WebAssembly, with the WebAssembly implementation being faster in 86\% of cases tested.
+Finally, the paper mentions that game developers may benefit extensively from WebAssembly; we will touch on this with our own benchmarking later.
+
+In a paper by Herrera \cite{Herrera2018WebAssemblyAJ}, WebAssembly's performance is measured not only on several browsers on a desktop platform, but
+also on mobile devices, IoT devices, and web servers.
+The paper also compares WebAssembly to C in addition to JavaScript.
+While this paper and our project have overlaps, our interests align more with the empirical and practical use of WebAssembly.
+Furthermore, our paper presents benchmarks on updated devices and technology stacks.
+
+On the other hand, Jangda et al. introduce Browsix-Wasm \cite{notSoFast} as a platform to run Unix programs in the browser, with WebAssembly employed to improve security and performance.
+To the authors' surprise, however, WebAssembly underperformed in this case.
+The paper also compares the binaries generated by WebAssembly compilers and native compilers and speculates on the reasons for the performance difference.
+The results presented in this paper contradict previous benchmarking results, which inspires us to look into this topic with our own experiments.
+Additionally, we are motivated to study the performance traits of WebAssembly at a low level to gain an understanding of why they occur.
+
+Vogel \cite{arne} likewise poses concerns about WebAssembly's performance, especially compared to native code, and also investigates the compiled output in a similar fashion.
+Again, while these results are interesting, we argue that neither of the above two cases represents the practical use cases of WebAssembly.
+
+\begin{table*}[t]
+  \begin{tabular}{|c|
+    >{\centering\arraybackslash}m{2.4cm}|
+    >{\centering\arraybackslash}m{2.4cm}|
+    >{\centering\arraybackslash}m{2.4cm}|
+    >{\centering\arraybackslash}m{2.4cm}|
+    >{\centering\arraybackslash}m{2.4cm}|}
+  \hline
+                        & Android         & iOS                  & Linux                        & macOS                        & Windows                     \\ \hline
+  OS Version           & EMUI 10.1.0.165 & iOS 14.0             & Ubuntu 18.04.5 LTS           & Big Sur 11.0.1               & Windows 10 2004 19041.630   \\ \hline
+  Hardware Description & HUAWEI Mate 20  & iPhone X             & Intel Xeon E3-1245v6 / 16 GB & Intel Core i7-6700HQ / 16 GB & Intel Core i7-8700K / 32 GB \\ \hline
+  Chrome               & 86.0.4240.185   & 86.0.4240.93         & 86.0.4240.75                 & 86.0.4240.198                & 86.0.4240.193               \\ \hline
+  Edge                 & 45.09.4.5083    & 45.10.3              & N/A                          & 86.0.622.69                  & 86.0.622.56                 \\ \hline
+  Firefox              & 82.1.3          & Daylight 29.1 (3022) & 82.0                         & 82.0.3                       & 82.0.3                      \\ \hline
+  Safari               & N/A             & 14.0                 & N/A                          & 14.0.1 (16610.2.11.51.8)     & N/A                         \\ \hline
+  \end{tabular}
+  \caption{Evaluation Environments for PSPDFKit Benchmarking.}
+  \label{table:eval-env-pspdfkit}
+  \end{table*}
+
+%-------------------------------------------------------------------------------
+\section{Methodologies}\label{sec:methodologies}
+%-------------------------------------------------------------------------------
+
+Because we are interested in understanding how WebAssembly performs in real-world scenarios, we have decided to use benchmarks that reflect the likely use cases of WebAssembly.
+Since WebAssembly is mainly used in web applications, it is natural to consider the market of web applications.
+The Chrome Web Store, integrated with Google Chrome, provides a good indication of the market for web applications, as it serves as a central hub for browsing and installing them.
+It is not surprising to see that the two largest categories of apps in the Chrome Web Store are productivity apps and games.
+Based on this, we decided to select two benchmarks for productivity-centered apps and gaming, respectively.
+
+To gauge the performance of WebAssembly for productivity apps, we use the PSPDFKit WebAssembly Benchmark. %% TODO: citation
+PSPDFKit is a popular framework for working with PDF files, offering development kits for various software platforms, including WebAssembly.
+In our benchmarking, we consider four general operations on PDF documents: rendering PDF pages, searching within a PDF, exporting a document, and adding annotations to a document.
+We also benchmark the initialization overhead of the PSPDFKit WebAssembly SDK.
+To compare, the same set of operations are also performed with JavaScript.
+
+To gauge the performance of WebAssembly for games, we chose the webapp WasmBoy, an emulator for the Nintendo Game Boy and Game Boy Color handheld consoles. %% TODO: citation
+It is written in AssemblyScript, a variant of TypeScript which is compiled directly to WebAssembly. The WasmBoy website includes an in-browser benchmarking application which computes a variety of peformance statistics while running an input Game Boy ROM for a fixed number of frames.
+The benchmark provides a handful of ``open-source'' ROMs with which this evaluation can be performed. Moreover, the benchmark compares performance between three different builds of WasmBoy: WebAssembly/AssemblyScript, TypeScript, and TypeScript compiled using Google's Closure Compiler.
+
+We wish to not only report and analyze the data from these benchmarks, but to also explain possible reasons for that data.
+To do so, we decided to add Takahirox's WebAssembly Benchmark to our suite.
+Takahirox's benchmark does not represent any specific application or use case;
+instead, it performs basic and general numeric computations, such as calculating Fibonacci numbers, performing integer multiplications, performing floating-point multiplications, and others.
+It itself serves as a third benchmark that can reveal some of the characteristics behind the data from the other benchmarks.
+As an additional perk, it provides a shell script that compiles WebAssembly, allowing us to investigate some properties of WebAssembly code at the low level.
+This will utimately help us explain some emergent performance characteristics of WebAssembly programs.
+
+To form a more complete picture of benchmarking results, we run the three benchmark suites on various platform.
+We not only conduct experiments on desktop operating systems, such as Microsoft Windows, Apple macOS, and Ubuntu Linux, but we also run the benchmarks on commonly used mobile platforms, include Apple iOS and Google Android.
+We run the benchmarks on several popular web browsers, namely Google Chrome, Mozilla Firefox, Microsoft Edge, and Apple Safari, so long as the browser is supported on the corresponding operating system.
+
+Table \ref{table:browser-os-combination} shows the browser and OS combinations that we investigate in this paper.
+
+\begin{table}[h]
+  \begin{tabular}{|c|c|c|c|c|c|}
+  \hline
+          & Android & iOS & Linux & macOS & Windows \\ \hline
+  Chrome  & V       & V   & V     & V     & V       \\ \hline
+  Firefox & V       & V   & V     & V     & V       \\ \hline
+  Edge    & V       & V   &       & V     & V       \\ \hline
+  Safari  &         & V   &       & V     &         \\ \hline
+  \end{tabular}
+  \caption{Browser Availability}
+  \label{table:browser-os-combination}
+  \end{table}
+
+\section{Evaluation Environments}\label{sec:eval}
+
+Table \ref{table:eval-env-pspdfkit} shows the current evaluation environments for the PSDPDFKit benchmarking.
+
+The WasmBoy benchmarking is done using the Windows machine shown in Table \ref{table:eval-env-wasmboy}.
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{|c|c|c|c|}
+  \hline
+             & Windows (WasmBoy)           \\ \hline
+  OS Version & 10.0.19041          \\ \hline
+  CPU        & Intel Core i5-7200U \\ \hline
+  RAM        & 12 GB               \\ \hline
+  Chrome     & 86.0.4240.183       \\ \hline
+  Firefox    & 82.0.2              \\ \hline
+  Edge       & 86.0.622.63         \\ \hline
+  \end{tabular}
+  \caption{Windows Machine for WasmBoy Benchmarking.}
+  \label{table:eval-env-wasmboy}
+\end{table}
+
+The Takahirox benchmarking is performed with the Windows machine described in Table \ref{table:eval-env-takahirox}.
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{|c|c|c|c|}
+  \hline
+             & Windows (Takahirox)           \\ \hline
+  OS Version & 10.0.18362          \\ \hline
+  CPU        & Intel Core i5-6200U \\ \hline
+  RAM        & 8 Gb                \\ \hline
+  Chrome     & 71.0.3578.98        \\ \hline
+  Firefox    & 82.0.2              \\ \hline
+  Edge       & 44.18362.449.0         \\ \hline
+  \end{tabular}
+  \caption{Windows Machine for Takahirox Benchmarking.}
+  \label{table:eval-env-takahirox}
+\end{table}
+
+\section{Results and Discussions}\label{sec:results}
+
+We present the benchmark results with discussion.
+
+\subsection{PSPDFKit}
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=1.0\textwidth]{pspdfkit/chart.png}
+  \caption{Performance comparison for PSPDFKit}
+  \label{fig:pspdfkit-results-chart}
+\end{figure*}
+
+Figure \ref{fig:pspdfkit-results-chart}
+shows the results of the PSPDFKit WebAssembly Benchmark.
+Operating system and browser combination is indicated on the X-axis.
+Every combination has two vertical bars, respectively representing the average execution times in milliseconds for JavaScript and WebAssembly.
+Each bar is further divided into five different colors; each represents one of the five aspects tested in this benchmark.
+
+The global best performance is found with WebAssembly using Firefox on Linux.
+
+For three out of five operating systems---namely Android, macOS, and Windows---JavaScript has the best performance, while on the other two (iOS and Linux), WebAssembly is faster.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.48\textwidth]{pspdfkit/pspdfkit-total-comparison.png}
+  \caption{Comparison Highlight: blue box indicates JavaScript is better; red box indicates WebAssembly is better}
+  \label{fig:pspdfkit-total-comparison}
+\end{figure}
+
+In Figure \ref{fig:pspdfkit-total-comparison}, we highlight the comparisons. Out of a total of 16 comparisons, nine have JavaScript (highlighed in blue) running faster, and seven have WebAssembly (highlighted in red) running faster.
+
+It is perhaps surprising that as the successor to Netscape, the originator of JavaScript, the performance of JavaScript on Mozilla Firefox is rather poor. It carries the worst performance for every operating system tested with the exception of iOS.
+
+While Linux/Firefox/WebAssembly is the best of all, the performance of Firefox/WebAssembly on other operating systems is not very impressive.
+
+Initialization time seems to be a deciding factor, accounting for inferior performance of WebAssembly on Android/Edge, macOS/Chrome, macOS/Edge, macOS/Safari, Windows/Chrome, and Windows/Edge.
+However, Linux/Firefox/WebAssembly appears to be an exception.
+
+We also observe that JavaScript generally runs faster on desktops than mobile devices.
+
+One point of interest is that Edge recently switched to the same engine as Chrome. This may account for their similar performance in this benchmark.
+
+% Could talk more about difference between mobile/desktop.
+
+% Could talk more about the performance among browsers in each OS.
+
+% Could talk more about the performance of the same browser in different OSes.
+
+\subsection{WasmBoy}
+
+The WasmBoy benchmark was run on the machine ``Windows 2'', as described in Table \ref{table:eval-env-wasmboy}.
+The benchmark provides the following five ROMs:
+\begin{itemize}
+  \item ``Back to Color'': an intensive, continuous graphics and animation demo
+  \item ``Waveform'': a simple static demo of a waveform graph
+  \item ``Dino's Offline Adventure'', ``Libbet and the Magic Floor'', and ``Tobu Tobu Girl'': proper games with an intro animation and title screen. Since the benchmark does not simulate input, these three ROMs do not advance past the title screen
+\end{itemize}
+All five of these ROMs were tested, each run for 2500 frames. The test was conducted on fresh installations of Firefox, Microsoft Edge, and Google Chrome.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.49\textwidth]{wasmboy/back_to_color/firefox.png}
+  \caption{Performance comparison for ``Back to Color'' on Firefox.}
+  \label{fig:btc_firefox}
+\end{figure}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.49\textwidth]{wasmboy/back_to_color/edge.png}
+  \caption{Performance comparison for ``Back to Color'' on Microsoft Edge.}
+  \label{fig:btc_edge}
+\end{figure}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.49\textwidth]{wasmboy/back_to_color/chrome.png}
+  \caption{Performance comparison for ``Back to Color'' on Google Chrome.}
+  \label{fig:btc_chrome}
+\end{figure}
+
+The benchmark outputs a wide variety of statistics pertaining to the time taken to run all 2500 frames. In this report, we have included just two of these statistics: time to run per frame, and average frames per second measured at a granularity of 30 frames.
+Results for ``Back to Color'' can be seen in Figures \ref{fig:btc_firefox}, \ref{fig:btc_edge}, and \ref{fig:btc_chrome}; results for the remaining ROMs can be seen in Figures \ref{fig:dinos_firefox} through \ref{fig:waveform_chrome} in the appendix of the paper.
+
+The overall performance of WasmBoy depends heavily on the browser, the ROM, and the build method (WASM, TypeScript, Closure). However, a couple of patterns emerge:
+
+As can be expected, the general tendency is that the WebAssembly build is fastest, followed by Closure-compiled TypeScript, followed by plain TypeScript. Firefox seems to have the most clear stratification
+in this regard, with WebAssembly consistently and significantly outpacing the other two, whereas with Chrome and Edge the performance gain is less. However, all three builds run the slowest on Firefox
+overall; Edge appears to be the fastest, with Chrome just barely behind. As a tradeoff, all three builds have the most consistent framerate on Firefox, whereas on Edge and Chrome there are many abrupt peaks
+and valleys on the FPS graph.
+
+Based on these findings, it seems that WASM performs somewhat better for gaming applications. However, a greater breadth of data may be in order for a more definitive conclusion.
+
+\subsection{Takahirox}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.39\textwidth]{takahirox/Firefox.PNG}
+  \caption{Performance comparison on Firefox.}
+  \label{fig:takahirox-Firefox}
+  \includegraphics[width=0.39\textwidth]{takahirox/GoogleChrome.PNG}
+  \caption{Performance comparison on Google Chrome.}
+  \label{fig:takahirox-GoogleChrome}
+  \includegraphics[width=0.39\textwidth]{takahirox/MicrosoftEdge.PNG}
+  \caption{Performance comparison on Microsoft Edge.}
+  \label{fig:takahirox-MicrosoftEdge}
+\end{figure}
+
+Figures \ref{fig:takahirox-Firefox}, \ref{fig:takahirox-GoogleChrome}, and \ref{fig:takahirox-MicrosoftEdge} present the preliminary results for the Takahirox benchmark on the Machine \ref{table:eval-env-takahirox}.
+
+
+We can tell from the performance comparison test that among these three browsers, most results are consistent.
+For example, if WebAssembly performs better compared to JavaScript in one aspect on Google Chrome, then WebAssembly will also perform better in the same aspect on Firefox and Microsoft Edge.
+However, there are several exceptions. In the collision detection aspect, WebAssembly took less time than JavaScript on Firefox and Microsoft Edge but took more time on Google Chrome. And in the imageConvolute aspect, WebAssembly performed much better on Firefox but only slightly better on Microsoft Edge; on Google Chrome, WebAssembly actually performed worse in the imageConvolute aspect.
+
+To compare all aspects within a single browser, Google Chrome was chosen to give an example.
+For aspects including Fibonacci, multiplyInt, multiplyDouble, quicksortInt and quicksortDouble, WebAssembly always has better performance compared to JavaScript.
+But in aspects like collision detection, imageConvolute, imaeGrayscale, videoGrayscale, multiplyDoubleVec, sumInt and sumDoulble, WebAsssembly usually has worse performance compared to JavaScript.
+There are also several aspects where WebAssembly has almost the same performance as JaveScript. In general, however, WebAssembly seems to underperform JaveScript in the image and video processing aspects.
+It may be interesting to analyze how each browser accomplishes these aspects and see if that explains these findings.
+
+For the aspects multiplyInt and multiplyDouble, WebAssembly performed significantly better than JavaScript.
+This implies that WebAssembly is stronger for numerical calculations.
+Strangely, however, when the sumInt, sumDouble, multiplyIntVec and multiplyDoubleVec aspects are considered, the calculation ability of WebAssembly seems worse than JavaScript.
+On further investigation, we found that a common feature for these four aspects is that they all employed vectors in their code.
+This may indicate some sort of deficiency with WebAssembly's vector handling procedure.
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=0.75\textwidth]{explorer/architecture.png}
+  \caption{Overall Architecture for WebAssembly Explorer}
+  \label{fig:explorer-arch}
+\end{figure*}
+
+\section{WebAssembly Explorer}\label{sec:explorer}
+
+To better understand the reasons behind the performance differences and explain the characteristics thereof, we next inspect the JIT-ed assembly instructions from WebAssembly and compare them with the ones generated by a native compiler.
+To ease this study, we revived and further developed \textit{WebAssembly Explorer}, %% TODO citation
+a tool that takes C/C++ code as input and displays the compiled native instructions, equivalent WebAssembly, and JIT-ed instructions from that WebAssembly.
+The base version of the tool has been dormant for some time, but remains partially functional. To serve our purposes, we used it as a base, but rewrote its core logic with the latest compiler toolchains and redesigned its GUI.
+
+We present its architectural design in the next subsection,
+then we describe its deployment environment;
+finally, we demonstrate its output using a real example, and discuss the performance traits at this low level.
+
+\subsection{Architectural Design}
+
+Figure \ref{fig:explorer-arch} shows the overall architectural design for WebAssembly Explorer.
+
+In general, WebAssembly Explorer contains a web frontend component that runs in any browser and a RESTful backend that currently runs on a Linux server.
+
+\subsubsection*{Frontend}
+
+The frontend takes user input, which is any C or C++ source code,
+and sends the code over to the API.
+The frontend also responds to returns from the API.
+Depending on the input and selected API action,
+the response payload could be generated WebAssembly code in text format,
+JIT-ed assembly code in base64 format,
+native assembly code in base64 format,
+or an error.
+
+For text-formatted WebAssembly code, the frontend simply shows it in the bottom-left panel below the source code.
+For base64-formatted response payloads, the frontend first decodes them;
+next, it uses the \texttt{capstone.js} library to convert the assembly code from binary to actual text format;
+then, it pretty-prints the text output;
+and finally, if it is JIT-ed assembly code from WebAssembly, it shows the results in the center panel,
+or if it is native assembly code, is shows the results on the right panel.
+Our study focuses on comparisons between assembly code from WebAssembly and from the native compiler.
+
+The frontend also provides an optional console panel at the very bottom.
+It is made visible when errors are returned from the backend API, but otherwise can be hidden unless the user is interested in seeing the frontend-to-backend communication.
+
+The frontend allows users to configure the tool's behavior.
+Examples include toggling of a compile-on-modify feature, selection of C/C++ standard, optimization level, and compiler flags such as \texttt{-fastmath}, \texttt{-no-rtti}, and \texttt{-no-inline}.
+
+Several examples are also provided to allow users to familiarize themselves with the system; of course, any arbitrary source code is accepted.
+
+\subsubsection*{Backend}
+
+The backend accepts an input source code snippet and the action to perform, and then responds accordingly.
+There are three kinds of actions supported by the system: \texttt{c2assembly}, \texttt{c2wasm}, and \texttt{wasm2assembly}.
+Each of these corresponds to a script which invokes the appropriate compiler toolchain.
+
+\paragraph*{c2assembly} receives the C/C++ source code and the other compiler options provided by the frontend.
+It simply invokes the compiler to generate x86 assembly code.
+In our system, we choose to use the latest Clang compiler.
+The binary of the assembly code is read, and then is converted into base64 encoding for easier network communications.
+This base64-formatted x86 assembly code is then returned to the API caller.
+
+\paragraph*{c2wasm} also takes the C/C++ source code and other compiler options, and also employs Clang.
+However, instead of generating the x86 assembly code, we use Clang's built-in WebAssembly code generator.
+The generated WebAssembly code is also encoded in base64 before being passed to the frontend.
+
+\paragraph*{wasm2assembly} takes WebAssembly code as input. It invokes the JavaScript Shell (\texttt{js}) and uses the \texttt{wasmExtractCode} JavaScript API function to just-in-time compile the WebAssembly code.
+The JIT-ed code contains several code segments, some of which consist of boilerplate WebAssembly and JavaScript and some of which contain the input WebAssembly code.
+We extract the input segments, encode them with base64, and respond to the caller.
+
+\subsubsection*{Technology Stack}
+
+Our frontend is written as a standard HTML5 webpage. We use the \texttt{AngularJS} framework to render the layout.
+Vanilla JavaScript is used to send network requests and communicate with the backend API, as well as for handling the server responses.
+We use Python3's \texttt{SimpleHTTPServer} to serve the frontend code.
+
+Our backend is a PHP5 web application. There are several bash scripts serving as glue code between the PHP CGI and the compiler toolchains.
+We simply use the built-in server provided by the PHP language and runtime to serve the web application.
+
+As mentioned previously, we also employ the latest Clang and SpiderMonkey toolchains.
+
+\subsection{Deployment}
+
+WebAssembly Explorer is deployed to Amazon Web Services using one of its EC2 instances.
+This makes it accessible to anyone who knows the IP address and port.
+
+The instance runs on Ubuntu 20.04 LTS. We installed the latest toolchains and other dependencies needed to run our application with Ubuntu's built-in package manager \texttt{apt},
+with the exception of SpiderMonkey, which is not maintained by the Ubuntu community.
+Instead, SpiderMonkey can be installed using \texttt{jsvu}, or as an alternative,
+out backend repository embeds a SpiderMonkey JavaScript shell which can be used directly.
+
+As of this writing, WebAssembly Explorer is available at \texttt{http://52.87.196.236:8000/}.
+
+\subsection{Case Study: Matmul}
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=\textwidth]{explorer/matmul.png}
+  \caption{Screenshot of WebAssembly Explorer Inspecting Matmul Function}
+  \label{fig:explorer-matmul}
+\end{figure*}
+
+We use a classic function \texttt{Matmul}, matrix multiplication, to demonstrate WebAssembly Explorer and explain some performance differences.
+Figure \ref{fig:explorer-matmul} shows a screenshot of WebAssembly Explorer inspecting the \texttt{matmul} function.
+A C implementation is shown below.
+
+\begin{lstlisting}[language=C, caption=Matmul Function in C, label=lst:matmul-c]
+#define NI 100
+#define NK 100
+#define NJ 100
+
+
+void matmul(
+  int C[NI][NJ],
+  int A[NI][NK],
+  int B[NK][NJ]
+) {
+ for (int i = 0; i < NI; i++) {
+   for (int k = 0; k < NK; k++) {
+     for (int j = 0; k < NJ; j++) {
+      C[i][j] += A[i][k] * B[k][j];
+     }
+   }
+ }
+}
+\end{lstlisting}
+
+The right panel of WebAssembly Explorer shows the assembly code directly generated with the native compiler. In the following code listing, we show only the instructions for the matmul function:
+
+\begin{lstlisting}[caption=Matmul Function in x86 Assembly Code, label=lst:matmul-asm]
+	xor	eax, eax
+.LBB0_1:
+	mov	ecx, dword ptr [rdx + rax]
+	imul	ecx, dword ptr [rsi]
+	add	dword ptr [rdi + rax], ecx
+	add	rax, 4
+	jmp	.LBB0_1
+\end{lstlisting}
+
+The middle panel shows the assembly code JIT-ed from the WebAssembly:
+
+\begin{lstlisting}[caption=Matmul Function JIT-ed from WebAssembly using SpiderMonkey, label=lst:matmul-wasm]
+wasm-function[1]:
+  sub rsp, 8
+ 0x000004:
+  mov eax, dword ptr [r15 + rdi]
+  mov ecx, dword ptr [r15 + rdx]
+  mov ebx, dword ptr [r15 + rsi]
+  imul ecx, ebx
+  add eax, ecx
+  mov dword ptr [r15 + rdi], eax
+  add edx, 4
+  add edi, 4
+  jmp 4
+ 0x000021:
+  nop
+  add rsp, 8
+  ret
+\end{lstlisting}
+
+Comparing Listings \ref{lst:matmul-asm} and \ref{lst:matmul-wasm},
+we observe that the JIT-ed instructions from WebAssembly using SpiderMonkey are very close to the native code.
+Note that our server runs on a Linux machine and uses the SpiderMonkey engine, which is the same one used in the Mozilla Firefox browser.
+This could explain why it has rather impressive performance.
+However, if we look closer, there is some room for improvement.
+For example, SpiderMonkey generates code with a wider register footprint than the native code:
+SpiderMonkey uses three registers to store the current values from three arrays,
+perform the computation, and then store the result back.
+The native code just use one register as a buffer; it saves one register by reusing the same register when it performs the \texttt{imul} (integer multiplication) and saves another one by storing the \texttt{add} operation results back to the array pointer directly.
+In addition, the native compiler does a better job saving registers during the loop.
+
+WebAssembly Explorer currently only employs SpiderMonkey, and support for Chrome V8 is left as future work. However, In \cite{notSoFast}'s, the \texttt{matmul} function was JIT-ed using Chrome, and we cite the assembly code from that paper:
+
+\begin{lstlisting}[caption=Matmul Function JIT-ed from WebAssembly using Chrome, label=lst:matmul-wasm-chrome]
+mov [rbp-0x28],rax
+mov [rbp-0x20],rdx
+mov [rbp-0x18],rcx
+xor edi,edi               #i <- 0
+jmp L1'
+L1:                       #start first loop
+  mov ecx,[rbp-0x18]
+  mov edx,[rbp-0x20]
+  mov eax,[rbp-0x28]
+L1':
+  imul r8d,edi,0x1130
+  add r8d,eax
+  imul r9d,edi,0x12c0
+  add r9d,edx
+  xor r11d,r11d            #k <- 0
+  jmp L2'
+L2:                        #start second loop
+  mov ecx,[rbp-0x18]
+L2':
+  imul r12d,r11d,0x1130
+  lea r14d,[r9+r11*4]
+  add r12d,ecx
+  xor esi,esi              #j <- 0
+  mov r15d,esi
+  jmp L3'
+L3:                        #start third loop
+  mov r15d,eax
+L3':
+  lea eax,[r15+0x1]        #j <- j + 1
+  lea edx,[r8+r15*4]
+  lea r15d,[r12+r15*4]
+  mov esi,[rbx+r14*1]
+  mov r15d,[rbx+r15*1]
+  imul r15d,esi
+  mov ecx,[rbx+rdx*1]
+  add ecx,r15d
+  mov [rbx+rdx*1],ecx
+  cmp eax,NJ               #j < NJ
+  jnz L3'                  #end third loop
+  add r11,0x1              #k++
+  cmp r11d,NK              #k < NK
+  jnz L2                   #end second loop
+  add edi,0x1              #i++
+  cmp edi,NI               #i < NI
+  jnz L1                   #end first loop
+retl
+
+\end{lstlisting}
+
+There are substantial differences between the JIT-ed code from Chrome and SpiderMonkey.
+This explains the results shown in Figure \ref{fig:pspdfkit-results-chart}, where Firefox on Linux has an impressive WebAssembly performance and Chrome on the same machine struggles.
+From this comparison, we observe that the performance degradation on Chrome is due to three factors: increased instruction count, higher register pressure, and extra code branches.
+
+\paragraph*{Increased Instruction Count}
+Chrome chooses to avoid advanced x86 instructions.
+This results in an increase in the instruction count,
+which leads to longer execution time.
+
+\paragraph*{Higher Register Pressure}
+Chrome's JIT-ed assembly code requires a higher register usage.
+This leads to greater register spillage and thus harms performance.
+
+\paragraph*{Extra Code Branches}
+Both native assembly and JIT-ed assembly by SpiderMonkey have only a single branch per loop.
+In contrast, Chrome generates a few branches without inlining the loops.
+This introduces extra jumps and conditional checks, which hurts performance as well.
+
+From this study, we find it is rather clear to explain the performance differences at the assembly level. Such inspection provides not only helpful insight into why these differences occur, but also a good comparison of different toolchains.
+Through this exploration, we assert that WebAssembly Explorer is a useful and accessible tool for generating and analyzing WebAssembly and other low-level code.
+
+\section{Conclusion and Future Work}\label{sec:conclusion}
+
+In this project, we conducted empirical WebAssembly benchmarking with an emphasis on reflecting the likely real-world uses of the language.
+We ran three performance benchmarks, namely PSPDFKit, WasmBoy, and Takahirox.
+By running them on a variety of platforms and browsers, we got a comprehensive picture of WebAssembly's performance and overall usefulness compared to pure JavaScript.
+We presented their performance results and discussion based on those results.
+Finally, we inspected the JIT-ed assembly code for insights on performance characteristics.
+
+In practice, while WebAssembly runs exceptionally well on Firefox/Linux, its overall performance today does not match pure JavaScript. Even when it runs faster than JavaScript, its performance is not that impressive.
+We observed inconsistent performance traits across browsers and operating systems.
+Our experiments showed that operations on arrays are slower in WebAssembly due to missing vectorized instructions support.
+
+For future work, we plan to add Chrome V8 support to our WebAssembly Explorer tool.
+We will further inspect and compare instructions on floating-point numbers with those on integers, as well as investigate handling of arrays.
+Lastly, we are interested in knowing the energy consumption of WebAssembly as compared to JavaScript.
+
+As a final observation, browsers update very frequently, and their JavaScript and WebAssembly toolchain is developed rapidly.
+While recent browser updates have not changed the conclusions presented in this paper, the duration of its validity is out of our control.
+
+
+%-------------------------------------------------------------------------------
+\bibliographystyle{plain}
+\bibliography{\jobname}
+
+%%% appendix for extra data %%%
+
+% \newpage
+
+%% Wasmboy: Dino's Offline Adventure
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.49\textwidth]{wasmboy/dinos_offline_adventure/firefox.png}
+  \caption{Performance comparison for ``Dino's Offline Adventure'' on Firefox.}
+  \label{fig:dinos_firefox}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.49\textwidth]{wasmboy/dinos_offline_adventure/edge.png}
+  \caption{Performance comparison for ``Dino's Offline Adventure'' on Microsoft Edge.}
+  \label{fig:dinos_edge}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.49\textwidth]{wasmboy/dinos_offline_adventure/chrome.png}
+  \caption{Performance comparison for ``Dino's Offline Adventure'' on Google Chrome.}
+  \label{fig:dinos_chrome}
+\end{figure}
+
+%% Wasmboy: Libbet and the Magic Floor
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.49\textwidth]{wasmboy/libbet/firefox.png}
+  \caption{Performance comparison for ``Libbet and the Magic Floor'' on Firefox.}
+  \label{fig:libbet_firefox}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.49\textwidth]{wasmboy/libbet/edge.png}
+  \caption{Performance comparison for ``Libbet and the Magic Floor'' on Microsoft Edge.}
+  \label{fig:libbet_edge}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.49\textwidth]{wasmboy/libbet/chrome.png}
+  \caption{Performance comparison for ``Libbet and the Magic Floor'' on Google Chrome.}
+  \label{fig:libbet_chrome}
+\end{figure}
+
+%% Wasmboy: Tobu Tobu Girl
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.49\textwidth]{wasmboy/tobu_tobu_girl/firefox.png}
+  \caption{Performance comparison for ``Tobu Tobu Girl'' on Firefox.}
+  \label{fig:tobu_firefox}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.49\textwidth]{wasmboy/tobu_tobu_girl/edge.png}
+  \caption{Performance comparison for ``Tobu Tobu Girl'' on Microsoft Edge.}
+  \label{fig:tobu_edge}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.49\textwidth]{wasmboy/tobu_tobu_girl/chrome.png}
+  \caption{Performance comparison for ``Tobu Tobu Girl'' on Google Chrome.}
+  \label{fig:tobu_chrome}
+\end{figure}
+
+%% Wasmboy: Waveform
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.49\textwidth]{wasmboy/waveform/firefox.png}
+  \caption{Performance comparison for ``Waveform'' on Firefox.}
+  \label{fig:waveform_firefox}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.49\textwidth]{wasmboy/waveform/edge.png}
+  \caption{Performance comparison for ``Waveform'' on Microsoft Edge.}
+  \label{fig:waveform_edge}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.49\textwidth]{wasmboy/waveform/chrome.png}
+  \caption{Performance comparison for ``Waveform'' on Google Chrome.}
+  \label{fig:waveform_chrome}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%  LocalWords:  endnotes includegraphics fread ptr nobj noindent
+%%  LocalWords:  pdflatex acks
